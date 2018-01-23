@@ -17,6 +17,7 @@ package com.example.android.asynctaskloader;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,12 +30,14 @@ import com.example.android.asynctaskloader.utilities.NetworkUtils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.Key;
 
 public class MainActivity extends AppCompatActivity {
 
     // TODO (1) Create a static final key to store the query's URL
-
+    private static final String SEARCH_QUERY_URL_EXTRA = "query";
     // TODO (2) Create a static final key to store the search's raw JSON
+    private static final String SEARCH_RESULTS_RAW_JSON = "results";
 
     private EditText mSearchBoxEditText;
 
@@ -60,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
         // TODO (9) If the savedInstanceState bundle is not null, set the text of the URL and search results TextView respectively
+        if(savedInstanceState!=null){
+            mUrlDisplayTextView.setText(savedInstanceState.getString(SEARCH_QUERY_URL_EXTRA));
+            mSearchResultsTextView.setText(savedInstanceState.getString(SEARCH_RESULTS_RAW_JSON));
+        }
     }
 
     /**
@@ -152,6 +159,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // TODO (3) Override onSaveInstanceState to persist data across Activity recreation
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        String queryURL = mUrlDisplayTextView.getText().toString();
+        outState.putString(SEARCH_QUERY_URL_EXTRA,queryURL);
+        String rawJsonSearchResults = mSearchResultsTextView.getText().toString();
+        outState.putString(SEARCH_RESULTS_RAW_JSON,rawJsonSearchResults);
+    }
+
     // Do the following steps within onSaveInstanceState
     // TODO (4) Make sure super.onSaveInstanceState is called before doing anything else
 
